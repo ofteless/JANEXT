@@ -1,13 +1,6 @@
-# webRequest.onAuthRequired
+# JANEXT
 
-This sample demonstrates the `webRequest.onAuthRequired` listener to detect an authentication request and log the user into the designated site.
+Just `git clone` this, go to the extensions screen of your favorite Chromium browser, press "Load Unpacked" 
+and select the folder containing these files. Fuck me it's 3 in the morning. I'm writing this later.
 
-## Overview
-
-When an authentication check is detected, a check is made to confirm that the request has come from the correct source. Account credentials are then provided for the response via an auth handler.
-
-## Running this extension
-
-1. Clone this repository.
-2. Load this directory in Chrome as an [unpacked extension](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked).
-3. Open a new tab and navigate to <https://httpbin.org/basic-auth/guest/guest>. You will be prompted to enter a username and password. With this extension installed, the username and password will be automatically provided.
+Expect jank. I'll fix it later. Probably
