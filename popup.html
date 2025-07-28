@@ -17,29 +17,50 @@
     input[type="range"] {
       width: 70%
     }
+    .sliders-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* label | slider | output */
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.sliders-grid label {
+  display: contents;
+}
+
+.sliders-grid input[type="range"] {
+  width: 100%;
+}
   </style>
 </head> 
 <body>
   <h3>JANEXT Settings</h3>
+  <p>Click on the value next to a slider to set it manually</p>
   <hr>
   <div id="options">
     <details><summary>Basic</summary>
-        <label>Temperature: <input type="range" step="0.01" data-key="temperature" min="0" max="2" placeholder="1.0"/><output>1.2</output></label>
-        <label>Max Tokens: <input type="range" step="1" data-key="max_tokens" min="0" placeholder="500"/></label>
-        <label>Top K: <input type="range" step="1" data-key="top_k" min="0" max="200" placeholder="0"/></label>
-        <label>Top P: <input type="range" step="0.01" data-key="top_p" min="0" max="1" placeholder="0.00"/></label>
-        <label>Rep. Pen: <input type="range" step="0.01" data-key="repetition_penalty" min="0" max="2" placeholder="1.00"/></label>
-    </details>
+      <div class="sliders-grid">
+        <label>Temperature: <input type="range" step="0.01" data-key="temperature" min="0" max="2" placeholder="1.0"/><output for="temperature">1.2</output></label>
+        <label>Max Tokens: <input type="range" step="1" data-key="max_tokens" min="0" max="2000" placeholder="500"/><output for="max_tokens">500</output></label>
+        <label>Top K: <input type="range" step="1" data-key="top_k" min="0" max="200" placeholder="0"/><output for="top_k">0</output></label>
+        <label>Top P: <input type="range" step="0.01" data-key="top_p" min="0" max="1" placeholder="0.00"/><output for="top_p">0.00</output></label>
+        <label>Rep. Pen: <input type="range" step="0.01" data-key="repetition_penalty" min="0" max="2" placeholder="1.00"/><output for="repetition_penalty">1.00</output></label>
+        </div>
+      </details>
     <details><summary>Advanced</summary>
-        <label>Seed: <input type="range" step="1" data-key="seed" min="0" max="999999"/></label>
-        <label>Freq. Pen: <input type="range" step="0.01" data-key="frequency_penalty" min="-2" max="2" placeholder="0.00"/></label>
-        <label>Pres. Pen: <input type="range" step="0.01" data-key="presence_penalty" min="-2" max="2" placeholder="0.00"/></label>
-        <label>Min P: <input type="range" step="0.01" data-key="min_p" min="0" max="1" placeholder="0.00"/></label>
-        <label>Top A: <input type="range" step="0.01" data-key="top_a" min="0" max="1" placeholder="0.00"/></label>
-    </details>
-        <details><summary>Developer</summary>
-        <label>Logprobs: <input type="range" data-key="top_logprobs" min="0" max="20" placeholder="0"/></label>
-    </details>
+      <div class="sliders-grid">
+        <label>Seed: <input type="range" step="1" data-key="seed" min="0" max="999999"/><output for="seed">0</output></label>
+        <label>Freq. Pen: <input type="range" step="0.01" data-key="frequency_penalty" min="-2" max="2" placeholder="0.00"/><output for="frequency_penalty">0.00</output></label>
+        <label>Pres. Pen: <input type="range" step="0.01" data-key="presence_penalty" min="-2" max="2" placeholder="0.00"/><output for="presence_penalty">0.00</output></label>
+        <label>Min P: <input type="range" step="0.01" data-key="min_p" min="0" max="1" placeholder="0.00"/><output for="min_p">0.00</output></label>
+        <label>Top A: <input type="range" step="0.01" data-key="top_a" min="0" max="1" placeholder="0.00"/><output for="top_a">0.00</output></label>
+        </div>
+      </details>
+    <details><summary>Developer</summary>
+      <div class="sliders-grid">
+        <label>Logprobs: <input type="range" data-key="top_logprobs" min="0" max="20" placeholder="0"/><output for="top_logprobs">0</output></label>
+        </div>
+      </details>
   </div>
   <hr>
   <button id="save">Save</button>
