@@ -27,12 +27,10 @@ inputs.forEach((input) => {
     const newValue = prompt('Enter new value:', currentValue);
     
     if (newValue !== null) {
-      // Validate input
       const numValue = parseFloat(newValue);
       if (!isNaN(numValue) && numValue >= input.min && numValue <= input.max) {
         input.value = numValue;
         output.textContent = numValue;
-        // Dispatch input event to trigger any listeners
         input.dispatchEvent(new Event('input', { bubbles: true }));
       } else {
         alert(`Please enter a value between ${input.min} and ${input.max}`);
