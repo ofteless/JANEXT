@@ -1,109 +1,68 @@
-console.log("✅ JANEXT: Content script injected!");
+console.log("✅ JANEXT: Content script injected (isolated world)!");
 
-// Intercept all fetch requests
-(function() {
+// Inject script into PAGE CONTEXT (where actual requests originate)
+const script = document.createElement('script');
+script.type = 'text/javascript';
+script.textContent = `
+  console.log("✅ JANEXT: Main world script injected!");
+
+  // Override fetch in PAGE CONTEXT
   const originalFetch = window.fetch;
-  window.fetch = async function(input, init) {
-    // Normalize input to get URL and method
-    let url, method;
-    
-    if (typeof input === 'string') {
-      url = input;
-      method = init?.method || 'GET';
-    } else if (input instanceof Request) {
-      url = input.url;
-      method = input.method;
-    } else {
-      return originalFetch(input, init);
-    }
-
-    // ✅ Handle both openrouter.ai and api.openrouter.ai domains
-    const isTargetRequest = (
-      typeof url === 'string' && 
-      url.includes('openrouter') &&
-      method.toUpperCase() === 'POST'
-    );
-
-    if (isTargetRequest) {
-      console.log("janext - Target request detected:", url);
+  window.fetch = function(url, options = {}) {
+    if (typeof url === 'string' && 
+        url.includes('openrouter.ai/api/v1/chat/completions') && 
+        options.method?.toUpperCase() === 'POST') {
       
-      // Create clone to safely read body without affecting original
-      const request = input instanceof Request ? input : new Request(url, init);
-      const requestClone = request.clone();
-      
-      try {
-        // ✅ Only parse if content-type is JSON
-        const contentType = request.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          const originalBody = await requestClone.text();
-          const json = JSON.parse(originalBody);
-          
-          // ✅ Only modify if body is valid JSON
-          if (json && typeof json === 'object') {
-            json.seed = 10;
-            console.log("janext - Modified request body (fetch):", json);
-            
-            // Create new request with modified body
-            return originalFetch(request, {
-              ...init,
-              body: JSON.stringify(json),
-              headers: {
-                ...init?.headers,
-                'Content-Type': 'application/json'
-              }
-            });
-          }
-        }
-      } catch (e) {
-        console.error("janext - Fetch modification failed:", e);
-      }
-    }
-    
-    return originalFetch(input, init);
-  };
-})();
-
-// Intercept all XHR requests
-(function() {
-  const open = XMLHttpRequest.prototype.open;
-  const send = XMLHttpRequest.prototype.send;
-  
-  XMLHttpRequest.prototype.open = function(method, url, ...args) {
-    this._janext_url = url;
-    this._janext_method = method;
-    open.call(this, method, url, ...args);
-  };
-
-  XMLHttpRequest.prototype.send = function(body) {
-    const isTargetRequest = (
-      this._janext_url &&
-      this._janext_url.includes('openrouter') &&
-      this._janext_method.toUpperCase() === 'POST'
-    );
-
-    if (isTargetRequest) {
-      console.log("janext - Target XHR request detected:", this._janext_url);
-      
-      // ✅ Only handle string bodies (common case for JSON)
-      if (body && typeof body === 'string') {
+      if (options.body && typeof options.body === 'string') {
         try {
-          // ✅ Check Content-Type before parsing
-          const contentType = this.getRequestHeader('Content-Type') || '';
-          if (contentType.includes('application/json')) {
-            const json = JSON.parse(body);
+          const json = JSON.parse(options.body);
+          
+          // ONLY MODIFY IF SEED ISN'T ALREADY PRESENT
+          if (json.seed === undefined) {
             json.seed = 10;
-            console.log("janext - Modified XHR body:", json);
-            
-            // ✅ Re-set modified body and content-type header
-            this.setRequestHeader('Content-Type', 'application/json');
-            body = JSON.stringify(json);
+            options.body = JSON.stringify(json);
+            console.log("✅ JANEXT: Added seed=10 to fetch request");
           }
         } catch (e) {
-          console.error("janext - XHR modification failed:", e);
+          console.error("❌ JANEXT: Failed to parse fetch body:", e);
         }
       }
     }
-    
-    send.call(this, body);
+    return originalFetch(url, options);
   };
-})();
+
+  // Override XHR in PAGE CONTEXT
+  const originalOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url) {
+    this._janext_url = url;
+    this._janext_method = method;
+    return originalOpen.apply(this, arguments);
+  };
+
+  const originalSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.send = function(body) {
+    if (this._janext_url && 
+        this._janext_url.includes('openrouter.ai/api/v1/chat/completions') && 
+        this._janext_method?.toUpperCase() === 'POST') {
+      
+      if (body && typeof body === 'string') {
+        try {
+          const json = JSON.parse(body);
+          
+          // ONLY MODIFY IF SEED ISN'T ALREADY PRESENT
+          if (json.seed === undefined) {
+            json.seed = 10;
+            body = JSON.stringify(json);
+            console.log("✅ JANEXT: Added seed=10 to XHR request");
+          }
+        } catch (e) {
+          console.error("❌ JANEXT: Failed to parse XHR body:", e);
+        }
+      }
+    }
+    return originalSend.call(this, body);
+  };
+`;
+
+(document.head || document.documentElement).appendChild(script);
+script.remove(); // Cleanup
