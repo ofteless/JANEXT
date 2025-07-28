@@ -1,39 +1,89 @@
-chrome.webRequest.onBeforeRequest.addListener(
-  function(details) {
-    if (details.method === "POST" && details.url.includes("/api/v1/chat/completions")) {
-      let requestBody = details.requestBody;
-      console.log("janext - Found matching post request")
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "injectMainWorldScript") {
+    if (!sender.tab?.id) {
+      sendResponse({ success: false, error: "No tab ID" });
+      return;
+    }
 
-      if (requestBody && requestBody.raw && requestBody.raw.length) {
-        let decoder = new TextDecoder("utf-8");
-        let encoder = new TextEncoder();
-
-        let rawData = requestBody.raw[0].bytes;
-        let jsonString = decoder.decode(rawData);
-
+    chrome.scripting.executeScript({
+      target: { tabId: sender.tab.id, allFrames: true },
+      world: "MAIN",
+      func: () => {
         try {
-          let json = JSON.parse(jsonString);
+          window.JANEXT_HOOKED = true
+          console.log("Main world context:", window.location.href);
+          console.log("JANEXT: Main world script running (injected via scripting.executeScript)");
 
-          // Add new parameter
-          json.seed = 10;
+          const originalFetch = window.fetch;
+          window.fetch = function(url, options = {}) {
+            console.log("JANEXT: fetch called with", url, options);
+            if (typeof url === 'string' &&
+                url.includes('openrouter.ai/api/v1/chat/completions') &&
+                options.method?.toUpperCase() === 'POST') {
 
-          let newJsonString = JSON.stringify(json);
-          let newRaw = encoder.encode(newJsonString);
-
-          console.log("janext - Added param");
-
-          return { 
-            requestBody: {
-              raw: [{ bytes: newRaw }]
+              if (options.body && typeof options.body === 'string') {
+                try {
+                  const json = JSON.parse(options.body);
+                  // set params here
+                  json.seed = 10;
+                  json.top_k = 1;
+                  options.body = JSON.stringify(json);
+                  console.log("JANEXT: Added seed=10 to fetch request");
+                  console.log("Modified body:", JSON.stringify(json, null, 2));
+                } catch (e) {
+                  console.error("JANEXT: Fetch parsing error:", e);
+                }
+              }
             }
+            return originalFetch.call(this, url, options);
+          };
+
+          // get this weak stuff outta here!!!
+          const originalOpen = XMLHttpRequest.prototype.open;
+          XMLHttpRequest.prototype.open = function(method, url) {
+            this._janext_url = url;
+            this._janext_method = method;
+            console.log("JANEXT: XHR open called with", method, url);
+            return originalOpen.apply(this, arguments);
+          };
+
+          const originalSend = XMLHttpRequest.prototype.send;
+          XMLHttpRequest.prototype.send = function(body) {
+            console.log("JANEXT: XHR send called with body", body);
+            if (this._janext_url &&
+                this._janext_url.includes('openrouter.ai/api/v1/chat/completions') &&
+                this._janext_method?.toUpperCase() === 'POST') {
+
+              if (body && typeof body === 'string') {
+                try {
+                  const json = JSON.parse(body);
+                  if (json.seed === undefined) {
+                    json.seed = 10;
+                    body = JSON.stringify(json);
+                    console.log("JANEXT: Added seed=10 to XHR request");
+                    console.log("Modified body:", JSON.stringify(json, null, 2));
+                  }
+                } catch (e) {
+                  console.error("JANEXT: XHR parsing error:", e);
+                }
+              }
+            }
+            return originalSend.call(this, body);
           };
         } catch (e) {
-          console.error("janext - Failed to parse JSON body:", e);
-          // just return nothing to skip modification if parse fails
+          console.error("JANEXT: Main world script failed!", e);
         }
       }
-    }
-  },
-  {urls: ["https://openrouter.ai/*"]},
-  ["blocking", "requestBody"]
-);
+    }, () => {
+      if (chrome.runtime.lastError) {
+        console.error("JANEXT: Script injection failed:", chrome.runtime.lastError);
+        sendResponse({ success: false, error: chrome.runtime.lastError.message });
+      } else {
+        console.log("JANEXT: CSP-safe script injected via scripting.executeScript");
+        sendResponse({ success: true });
+      }
+    });
+
+    return true;
+  }
+});

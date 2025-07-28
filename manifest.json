@@ -3,11 +3,14 @@
   "version": "1.0",
   "manifest_version": 3,
   "description": "Adds seed=10 to OpenRouter chat requests",
-  "permissions": [],
+  "permissions": ["scripting", "activeTab", "tabs"],
   "host_permissions": [
     "https://openrouter.ai/*",
     "https://*.janitorai.com/*"
   ],
+    "background": {
+    "service_worker": "service-worker.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://*.janitorai.com/*"],
