@@ -1,0 +1,18 @@
+{
+  "name": "janext",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Adds seed=10 to OpenRouter chat requests",
+  "permissions": [],
+  "host_permissions": [
+    "https://openrouter.ai/*",
+    "https://*.janitorai.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.janitorai.com/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
