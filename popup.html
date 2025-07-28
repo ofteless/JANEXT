@@ -31,9 +31,15 @@
 .sliders-grid input[type="range"] {
   width: 100%;
 }
+.dm {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
   </style>
 </head> 
 <body>
+  <button class="dm" onclick="dm();">Dark Mode</button>
   <h3>JANEXT Settings</h3>
   <p>Click on the value next to a slider to set it manually</p>
   <hr>
@@ -64,7 +70,8 @@
   </div>
   <hr>
   <button id="save">Save</button>
-  <script src="popup.js"></script>
-  <script src="datalabels.js"></script>
+  <script src="web/popup.js"></script>
+  <script src="web/datalabels.js"></script>
+  <script src="web/dm.js" type="module"></script>
 </body>
 </html>
