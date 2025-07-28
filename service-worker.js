@@ -5,34 +5,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return;
     }
 
-    chrome.storage.sync.get(["seed", "top_k"], (config) => {
+    chrome.storage.sync.get(null, (config) => {
       chrome.scripting.executeScript({
         target: { tabId: sender.tab.id, allFrames: true },
         world: "MAIN",
         func: (initialConfig) => {
           try {
             window.JANEXT_HOOKED = true;
-            window.JANEXT_CONFIG = initialConfig; // Store config globally
+            window.JANEXT_CONFIG = initialConfig;
             console.log("JANEXT: Main world script running with config:", initialConfig);
 
-            // Listen for config updates via postMessage
             window.addEventListener('message', (event) => {
-              if (event.data && event.data.type === 'JANEXT_UPDATE_CONFIG') {
+              if (event.data?.type === 'JANEXT_UPDATE_CONFIG') {
                 window.JANEXT_CONFIG = event.data.config;
                 console.log("JANEXT: Config updated:", window.JANEXT_CONFIG);
               }
             });
 
             const originalFetch = window.fetch;
-            window.fetch = function(url, options = {}) {
+            window.fetch = function (url, options = {}) {
               if (typeof url === 'string' &&
-                  url.includes('openrouter.ai/api/v1/chat/completions') &&
-                  options.method?.toUpperCase() === 'POST') {
-
+                url.includes('openrouter.ai/api/v1/chat/completions') &&
+                options.method?.toUpperCase() === 'POST') {
                 if (options.body && typeof options.body === 'string') {
                   try {
                     const json = JSON.parse(options.body);
-                    Object.assign(json, window.JANEXT_CONFIG); // Use live config
+                    Object.assign(json, window.JANEXT_CONFIG);
                     options.body = JSON.stringify(json);
                     console.log("JANEXT Modified body:", json);
                   } catch (e) {
@@ -44,22 +42,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             };
 
             const originalOpen = XMLHttpRequest.prototype.open;
-            XMLHttpRequest.prototype.open = function(method, url) {
+            XMLHttpRequest.prototype.open = function (method, url) {
               this._janext_url = url;
               this._janext_method = method;
               return originalOpen.apply(this, arguments);
             };
 
             const originalSend = XMLHttpRequest.prototype.send;
-            XMLHttpRequest.prototype.send = function(body) {
+            XMLHttpRequest.prototype.send = function (body) {
               if (this._janext_url &&
-                  this._janext_url.includes('openrouter.ai/api/v1/chat/completions') &&
-                  this._janext_method?.toUpperCase() === 'POST') {
-
+                this._janext_url.includes('openrouter.ai/api/v1/chat/completions') &&
+                this._janext_method?.toUpperCase() === 'POST') {
                 if (body && typeof body === 'string') {
                   try {
                     const json = JSON.parse(body);
-                    Object.assign(json, window.JANEXT_CONFIG); // Use live config
+                    Object.assign(json, window.JANEXT_CONFIG);
                     body = JSON.stringify(json);
                     console.log("JANEXT XHR Modified body:", json);
                   } catch (e) {

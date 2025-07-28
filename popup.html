@@ -3,13 +3,39 @@
 <head>
   <style>
     body { width: 300px; padding: 10px; }
-    input, button { width: 100%; margin-top: 5px; }
+    input, button, label {
+      display: block;
+      width: 100%;
+      margin-top: 5px;
+    }
+    summary {
+        font-size: 1.2em; font-weight: bold;
+    }
   </style>
-</head>
+</head> 
 <body>
   <h3>JANEXT Settings</h3>
-  <label>Seed: <input type="number" id="seed" /></label>
-  <label>Top K: <input type="number" id="top_k" /></label>
+  <hr>
+  <div id="options">
+    <details><summary>Basic</summary>
+        <label>Temperature: <input type="number" step="0.1" data-key="temperature" min="0" max="2" placeholder="1.0"/></label>
+        <label>Max Tokens: <input type="number" step="1" data-key="max_tokens" min="0" placeholder="500"/></label>
+        <label>Top K: <input type="number" step="1" data-key="top_k" min="0" max="200" placeholder="0"/></label>
+        <label>Top P: <input type="number" step="0.01" data-key="top_p" min="0" max="1" placeholder="0.00"/></label>
+        <label>Rep. Pen: <input type="number" step="0.01" data-key="repetition_penalty" min="0" max="2" placeholder="1.00"/></label>
+    </details>
+    <details><summary>Advanced</summary>
+        <label>Seed: <input type="number" step="1" data-key="seed" min="0" max="999999"/></label>
+        <label>Freq. Pen: <input type="number" step="0.01" data-key="frequency_penalty" min="-2" max="2" placeholder="0.00"/></label>
+        <label>Pres. Pen: <input type="number" step="0.01" data-key="presence_penalty" min="-2" max="2" placeholder="0.00"/></label>
+        <label>Min P: <input type="number" step="0.01" data-key="min_p" min="0" max="1" placeholder="0.00"/></label>
+        <label>Top A: <input type="number" step="0.01" data-key="top_a" min="0" max="1" placeholder="0.00"/></label>
+    </details>
+        <details><summary>Developer</summary>
+        <label>Logprobs: <input type="number" data-key="top_logprobs" min="0" max="20" placeholder="0"/></label>
+    </details>
+  </div>
+  <hr>
   <button id="save">Save</button>
   <script src="popup.js"></script>
 </body>
