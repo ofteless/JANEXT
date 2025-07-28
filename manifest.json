@@ -1,8 +1,8 @@
 {
-  "name": "janext",
+  "name": "JANEXT",
   "version": "1.0",
   "manifest_version": 3,
-  "description": "Adds seed=10 to OpenRouter chat requests",
+  "description": "Unlocks the missing generation parameters for JanitorAI.",
   "permissions": ["scripting", "activeTab", "tabs", "storage"],
   "host_permissions": [
     "https://openrouter.ai/*",
