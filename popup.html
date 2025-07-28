@@ -31,20 +31,21 @@
 .sliders-grid input[type="range"] {
   width: 100%;
 }
-.dm {
+#dm {
     position: fixed;
     top: 10px;
     right: 10px;
+    width: 20vw;
 }
   </style>
 </head> 
 <body>
-  <button class="dm" onclick="dm();">Dark Mode</button>
+  <button id="dm">Dark Mode</button>
   <h3>JANEXT Settings</h3>
   <p>Click on the value next to a slider to set it manually</p>
   <hr>
   <div id="options">
-    <details><summary>Basic</summary>
+    <details id="accordion-1"><summary>Basic</summary>
       <div class="sliders-grid">
         <label>Temperature: <input type="range" step="0.01" data-key="temperature" min="0" max="2" placeholder="1.0"/><output for="temperature">1.2</output></label>
         <label>Max Tokens: <input type="range" step="1" data-key="max_tokens" min="0" max="2000" placeholder="500"/><output for="max_tokens">500</output></label>
@@ -53,7 +54,7 @@
         <label>Rep. Pen: <input type="range" step="0.01" data-key="repetition_penalty" min="0" max="2" placeholder="1.00"/><output for="repetition_penalty">1.00</output></label>
         </div>
       </details>
-    <details><summary>Advanced</summary>
+    <details id="accordion-2"><summary>Advanced</summary>
       <div class="sliders-grid">
         <label>Seed: <input type="range" step="1" data-key="seed" min="0" max="999999"/><output for="seed">0</output></label>
         <label>Freq. Pen: <input type="range" step="0.01" data-key="frequency_penalty" min="-2" max="2" placeholder="0.00"/><output for="frequency_penalty">0.00</output></label>
@@ -62,7 +63,7 @@
         <label>Top A: <input type="range" step="0.01" data-key="top_a" min="0" max="1" placeholder="0.00"/><output for="top_a">0.00</output></label>
         </div>
       </details>
-    <details><summary>Developer</summary>
+    <details id="accordion-3"><summary>Developer</summary>
       <div class="sliders-grid">
         <label>Logprobs: <input type="range" data-key="top_logprobs" min="0" max="20" placeholder="0"/><output for="top_logprobs">0</output></label>
         </div>
@@ -72,6 +73,6 @@
   <button id="save">Save</button>
   <script src="web/popup.js"></script>
   <script src="web/datalabels.js"></script>
-  <script src="web/dm.js" type="module"></script>
+  <script src="web/dm.js"></script>
 </body>
 </html>
