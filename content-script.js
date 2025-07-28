@@ -64,17 +64,54 @@ const scriptContent = `
   }
 `;
 
-// Create CSP-safe script injection
-const blob = new Blob([scriptContent], { type: 'application/javascript' });
-const url = URL.createObjectURL(blob);
+// SAFE INJECTION: Wait for <head> to be available
+function injectScript() {
+  // 1. Use MutationObserver to wait for <head>
+  const observer = new MutationObserver(() => {
+    if (document.head) {
+      inject();
+      observer.disconnect();
+    }
+  });
 
-// Inject via script tag (bypasses CSP for blob URLs)
-const script = document.createElement('script');
-script.src = url;
-script.onload = () => {
-  URL.revokeObjectURL(url);
-  script.remove();
-};
+  // 2. Start observing for DOM changes
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
 
-// Handle any early load scenarios
-console.log("✅ JANEXT: CSP-safe script injected");
+  // 3. Check immediately in case <head> already exists
+  if (document.head) {
+    inject();
+    observer.disconnect();
+    return;
+  }
+
+  function inject() {
+    const blob = new Blob([scriptContent], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = () => {
+      URL.revokeObjectURL(url);
+      script.remove();
+    };
+    
+    // Safely append to head (now guaranteed to exist)
+    document.head.appendChild(script);
+    console.log("✅ JANEXT: CSP-safe script injected");
+  }
+}
+
+// Start the injection process
+injectScript();
+
+const parent = document.head || document.documentElement;
+if (parent) {
+  parent.appendChild(script);
+} else {
+  window.addEventListener('DOMContentLoaded', () => {
+    (document.head || document.documentElement).appendChild(script);
+  });
+}
