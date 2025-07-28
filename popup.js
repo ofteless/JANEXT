@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const saveBtn = document.getElementById("save");
     const inputs = document.querySelectorAll("#options input[data-key]");
+    const outputs = document.querySelectorAll("output");
 
     // load tuah! localstorage on that thang
     chrome.storage.sync.get(null, (data) => {
@@ -8,8 +9,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const key = input.getAttribute("data-key");
             if (data[key] !== undefined) {
                 input.value = data[key];
+
+                const output = document.querySelector(`output[for="${key}"]`);
+                if (output) {
+                    output.textContent = input.value;
+                }
             }
         });
+    });
+
+    inputs.forEach(input => {
+        const key = input.getAttribute("data-key");
+        const output = document.querySelector(`output[for="${key}"]`);
+
+        if (output) {
+            input.addEventListener("input", () => {
+                output.textContent = input.value;
+            });
+        }
     });
 
     saveBtn.addEventListener("click", () => {
@@ -40,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         chrome.storage.sync.set(config, () => {
-            // todo: replace this
             alert("Settings saved!");
 
             chrome.tabs.query({}, (tabs) => {
@@ -51,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             config
                         }, (response) => {
                             if (chrome.runtime.lastError) {
-                                // who gaf
+                                // we dont care about this just fail peacefully
                             }
                         });
                     }
