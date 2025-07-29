@@ -44,13 +44,21 @@
                 right: 10px;
                 width: 20vw;
             }
+            h4 {
+                margin-bottom: 0;
+            }
         </style>
     </head>
     <body>
         <button id="dm">Dark Mode</button>
-        <h3>JANEXT Settings</h3>
-        <p>Click on the value next to a slider to set it manually</p>
+        <h2>JANEXT Settings</h2>
+        <hr>
+        <h4>Target</h4>
+        <p>Which API should the extension target? Use * for all. As long as your input contains a distinct portion of the API address, it will work.</p>
+        <input type="text" placeholder="'openrouter' or 'chutes' or 'openai' or ...." id="targetadr" data-key="targetadr"></input>
         <hr />
+        <h4>Parameters</h4>
+        <p>Click on the value next to a slider to set it manually</p>
         <div id="options">
             <details id="accordion-1">
                 <summary>Basic</summary>

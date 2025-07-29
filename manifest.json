@@ -5,7 +5,6 @@
   "description": "Unlocks the missing generation parameters for JanitorAI.",
   "permissions": ["scripting", "activeTab", "tabs", "storage"],
   "host_permissions": [
-    "https://openrouter.ai/*",
     "https://*.janitorai.com/*"
   ],
     "background": {
