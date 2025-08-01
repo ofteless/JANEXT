@@ -1,0 +1,62 @@
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="web/baseplate.css"></link>
+    </head>
+        <div id="topleft">
+            <a href="popup.html">Main</a>
+        </div>
+    <body>
+        <h2>JANEXT Settings</h2>
+        <hr>
+        <h3>Presets</h3>
+
+    </body>
+</html> -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="web/presets.css">
+  <link rel="stylesheet" href="web/baseplate.css">
+</head>
+
+<body>
+  <header>
+    <h1>Config Manager</h1>
+
+    <div class="controls">
+      <button id="saveBtn" class="primary">Save Current</button>
+      <input  id="fileInput" type="file" accept=".json" style="display:none">
+      <button id="loadBtn" class="primary">Load Config</button>
+    </div>
+  </header>
+
+  <main>
+    <p>This page allows you to save and load presets, as well as deploy them on specific conditions. <strong>WARNING: It is highly 
+    recommended to back up your presets as files using the built-in feature. LocalStorage can be very fickle!</strong></p>
+    <table aria-labelledby="configListHeading">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="configList">
+        <!-- rows injected by JS -->
+        <tr>
+          <td colspan="3" style="text-align:center;color:#666">
+            No saved configs yet.
+          </td>
+        </tr>
+      </tbody>
+      <caption id="configListHeading">Previously stored configs</caption>
+    </table>
+
+    <div id="status" role="status" aria-live="polite"></div>
+  </main>
+</body>
+</html>
