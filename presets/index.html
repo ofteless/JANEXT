@@ -25,11 +25,11 @@
 
 <body style="margin-top: 8vh">
   <header>
-    <h1>Preset Manager</h1>
+    <h1>Param Presets</h1>
     <div id="topleft">
         <a href="popup.html">Main</a>
     </div>
-            <button id="invert-btn">Dark Mode</button>
+            <button id="dm">Dark Mode</button>
 
     <div class="controls">
       <button id="saveBtn" class="primary">Save All</button>
@@ -39,7 +39,7 @@
   </header>
 
   <main>
-    <p>This page allows you to save and load presets, as well as deploy them on specific conditions. <strong>WARNING: It is highly 
+    <p>This page allows you to save and load parameter presets, as well as deploy them on specific conditions. <strong>WARNING: It is highly 
     recommended to back up your presets as files using the built-in feature. LocalStorage can be very fickle!</strong></p>
     <table aria-labelledby="configListHeading">
       <thead>
@@ -61,6 +61,7 @@
     </table>
 
   </main>
-        <script src="web/dm.js"></script>
+        <script src="/web/dm.js"></script>
+        <script src="/presets/presets.js"></script>
 </body>
 </html>
