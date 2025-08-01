@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const originalFetch = window.fetch;
             window.fetch = function (url, options = {}) {
               if (typeof url === 'string' &&
-                url.includes('openrouter.ai/api/v1/chat/completions') &&
+                url.includes(window.JANEXT_CONFIG?.targetadr) &&
                 options.method?.toUpperCase() === 'POST') {
                 if (options.body && typeof options.body === 'string') {
                   try {
@@ -51,7 +51,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const originalSend = XMLHttpRequest.prototype.send;
             XMLHttpRequest.prototype.send = function (body) {
               if (this._janext_url &&
-                this._janext_url.includes('openrouter.ai/api/v1/chat/completions') &&
+                this._janext_url.includes(window.JANEXT_CONFIG?.targetadr) &&
                 this._janext_method?.toUpperCase() === 'POST') {
                 if (body && typeof body === 'string') {
                   try {
