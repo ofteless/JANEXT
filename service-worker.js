@@ -17,7 +17,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             window.addEventListener('message', (event) => {
               if (event.data?.type === 'JANEXT_UPDATE_CONFIG') {
-                window.JANEXT_CONFIG = event.data.config;
+                const config = event.data.config;
+                if (config?.targetadr === "*") {
+                  config.targetadr = "";
+                }
+                window.JANEXT_CONFIG = config;
                 console.log("JANEXT: Config updated:", window.JANEXT_CONFIG);
               }
             });

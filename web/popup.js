@@ -1,11 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
     const saveBtn = document.getElementById("save");
+
+    // note that this alone does not include the text input
     const inputs = document.querySelectorAll("#options input[data-key]");
-    const outputs = document.querySelectorAll("output");
+    // but this does :D
+    const inputExclusions = ["targetadr"]; 
+    const inputExclusionsPlaceholders = ["*"]; 
+    const inputsExc = document.querySelectorAll(inputExclusions.map(id => `#${id}`).join(', '));
 
     // load tuah! localstorage on that thang
     chrome.storage.sync.get(null, (data) => {
-        inputs.forEach(input => {
+        [...inputs, ...inputsExc].forEach(input => {
             const key = input.getAttribute("data-key");
             if (data[key] !== undefined) {
                 input.value = data[key];
@@ -13,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const output = document.querySelector(`output[for="${key}"]`);
                 if (output) {
                     output.textContent = input.value;
+                } else {
+                    input.innerHTML = data[key];
                 }
             }
         });
@@ -31,12 +38,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     saveBtn.addEventListener("click", () => {
         const config = {};
-        inputs.forEach(input => {
+        console.log(inputsExc);
+        [...inputs, ...inputsExc].forEach(input => {
             const key = input.getAttribute("data-key");
             let val = input.value.trim();
 
             if (val === "") {
-                val = input.getAttribute("placeholder") || "0"; // fallback
+                if (input.type == "range") {
+                    val = input.getAttribute("placeholder") || "0"; // fallback
+                } else {
+                    val = inputExclusionsPlaceholders[inputExclusions.indexOf(key)];
+                }
             }
 
             if (input.type === "range") {
@@ -52,9 +64,11 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 config[key] = val;
             }
-
-            config["logprobs"] = true;
         });
+
+        // specialcaseland
+        config["logprobs"] = true;
+
 
         chrome.storage.sync.set(config, () => {
             alert("Settings saved!");
