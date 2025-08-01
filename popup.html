@@ -1,63 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <style>
-            body {
-                width: 400px;
-                padding: 10px;
-            }
-            input,
-            button,
-            label {
-                display: block;
-                width: 100%;
-                margin-top: 5px;
-            }
-            summary {
-                font-size: 1.2em;
-                font-weight: bold;
-                text-decoration: underline;
-            }
-            label {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-            input[type="range"] {
-                width: 70%;
-            }
-            .sliders-grid {
-                display: grid;
-                grid-template-columns: auto 1fr auto; /* label | slider | output */
-                gap: 8px 16px;
-                align-items: center;
-            }
-            .sliders-grid label {
-                display: contents;
-            }
-            .sliders-grid input[type="range"] {
-                width: 100%;
-            }
-            #dm {
-                position: fixed;
-                top: 10px;
-                right: 10px;
-                width: 20vw;
-            }
-            h4 {
-                margin-bottom: 0;
-            }
-        </style>
+        <link rel="stylesheet" href="web/baseplate.css"></link>
+        <link rel="stylesheet" href="web/popup.css"></link>
     </head>
     <body>
         <button id="dm">Dark Mode</button>
+        <div id="topleft">
+            <a href="presets.html">Presets</a>
+        </div>
         <h2>JANEXT Settings</h2>
         <hr>
-        <h4>Target</h4>
+        <h3>Target</h3>
         <p>Which API should the extension target? Use * for all. As long as your input contains a distinct portion of the API address, it will work.</p>
         <input type="text" placeholder="'openrouter' or 'chutes' or 'openai' or ...." id="targetadr" data-key="targetadr"></input>
         <hr />
-        <h4>Parameters</h4>
+        <h3>Parameters</h3>
         <p>Click on the value next to a slider to set it manually</p>
         <div id="options">
             <details id="accordion-1">
