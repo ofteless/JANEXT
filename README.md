@@ -10,4 +10,4 @@ should be affected with your new parameters. Note max token and temperatures in 
 that if you do not enter anything in the extension, the `placeholder` value will be passed (the value the slider had before changing it). Don't worry,
 all of the placeholders are set so the samplers are disabled by default. 
 
-<img src="readme_img.png" alt="image of two google drive interfaces. one is using significantly less storage" style="display: block; margin-top: -1em;">
+<img src="img/readme_img.png" alt="image of two google drive interfaces. one is using significantly less storage" style="display: block; margin-top: -1em;">
