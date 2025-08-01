@@ -12,6 +12,12 @@ all of the placeholders are set so the samplers are disabled by default.
 
 <img src="img/readme_img.png" alt="image of two google drive interfaces. one is using significantly less storage" style="display: block; margin-top: -1em;">
 
+### Versions
+
+Please note that releases in the [releases](https://github.com/ofteless/JANEXT/releases/) directory are the **only** official release versions. Using `git clone` or
+`git pull`ing a release build may introduce bugs, issues, and new features that are **not suited for production**. I push my commits to GitHub often to let the community
+keep track of progress, but it does not guarantee the product will be usable. Please stick to the releases unless you know what you are doing!
+
 ## Firefox
 
 Sorry, this extension **will not and may never** support Firefox. See, referring to the [Mozilla docs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities), 
