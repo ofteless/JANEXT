@@ -1,6 +1,6 @@
 # JANEXT
 
-Just `git clone` this, go to the extensions screen of your favorite Chromium browser, press "Load Unpacked" 
+Just [download the latest release](https://github.com/ofteless/JANEXT/releases/), go to the extensions screen of your favorite Chromium browser, press "Load Unpacked" 
 and select the folder containing these files. 
 
 ## Usage
